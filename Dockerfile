@@ -52,6 +52,9 @@ RUN timeout 1800 docker-php-ext-install intl || \
 # Habilitar mod_rewrite do Apache
 RUN a2enmod rewrite headers ssl
 
+# Configurar ServerName global para evitar warnings
+RUN echo "ServerName raspify.com.br" >> /etc/apache2/apache2.conf
+
 # Configurar PHP para produção
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
@@ -83,8 +86,8 @@ RUN mkdir -p /var/www/html/logs \
   && chmod -R 777 /var/www/html/logs \
   && chmod -R 777 /var/www/html/assets/upload
 
-# Renomear arquivo de configuração para produção
-RUN mv conexao.prod.php conexao.php
+# Renomear arquivo de configuração para produção (comentado temporariamente)
+# RUN if [ -f conexao.prod.php ]; then mv conexao.prod.php conexao.php; fi
 
 # Expor porta 80
 EXPOSE 80
