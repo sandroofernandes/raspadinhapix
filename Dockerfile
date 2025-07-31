@@ -73,8 +73,12 @@ COPY . .
 # Instalar dependências do Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Configurar permissões
-RUN chown -R www-data:www-data /var/www/html \
+# Criar diretórios necessários e configurar permissões
+RUN mkdir -p /var/www/html/logs \
+  && mkdir -p /var/www/html/assets/upload \
+  && mkdir -p /var/www/html/assets/banners \
+  && mkdir -p /var/www/html/assets/img \
+  && chown -R www-data:www-data /var/www/html \
   && chmod -R 755 /var/www/html \
   && chmod -R 777 /var/www/html/logs \
   && chmod -R 777 /var/www/html/assets/upload
