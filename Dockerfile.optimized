@@ -1,0 +1,48 @@
+# Dockerfile ultra-otimizado usando imagem com extensões pré-compiladas
+FROM serversideup/php:8.2-fpm-apache
+
+# Instalar apenas dependências necessárias
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    unzip \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Habilitar mod_rewrite do Apache
+RUN a2enmod rewrite headers ssl
+
+# Configurar PHP para produção
+COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+
+# Configurar Apache
+COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
+
+# Definir diretório de trabalho
+WORKDIR /var/www/html
+
+# Copiar composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copiar apenas arquivos necessários primeiro (para cache do Docker)
+COPY composer.json composer.lock ./
+
+# Instalar dependências do Composer
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Copiar resto dos arquivos
+COPY . .
+
+# Executar scripts do composer se necessário
+RUN composer run-script --no-dev post-install-cmd || true
+
+# Configurar permissões
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 777 /var/www/html/logs \
+    && chmod -R 777 /var/www/html/assets/upload
+
+# Expor porta
+EXPOSE 80
+
+# Comando de inicialização
+CMD ["apache2-foreground"]

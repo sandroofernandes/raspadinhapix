@@ -1,0 +1,40 @@
+# Ignorar arquivos desnecessários para reduzir tempo de build
+.git
+.gitignore
+README.md
+.env.example
+Dockerfile.alpine
+Dockerfile.optimized
+optimize-docker.sh
+
+# Arquivos de desenvolvimento
+.vscode/
+.idea/
+*.log
+
+# Arquivos temporários
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+*.swo
+
+# Cache e builds
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos de upload grandes (apenas para build)
+assets/upload/*.jpg
+assets/upload/*.png
+assets/upload/*.jpeg
+assets/upload/*.gif
+logs/*.log
+
+# Certificados locais
+__certificate/
+
+# Backup files
+*.bak
+*.backup

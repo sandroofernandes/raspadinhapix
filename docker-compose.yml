@@ -11,7 +11,7 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=senha123
       - SITE_NAME=RaspaPix
-      - SITE_URL=https://raspadinhapix.online
+      - SITE_URL=https://raspify.com.br
     volumes:
       - ./logs:/var/www/html/logs
       - ./assets/upload:/var/www/html/assets/upload

@@ -1,0 +1,63 @@
+# Dockerfile Alpine - Máxima performance
+FROM php:8.2-apache-alpine
+
+# Instalar dependências Alpine (muito mais rápido)
+RUN apk add --no-cache \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    libzip-dev \
+    icu-dev \
+    oniguruma-dev \
+    git \
+    unzip \
+    curl
+
+# Configurar e instalar extensões PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+        gd \
+        pdo \
+        pdo_mysql \
+        mysqli \
+        zip \
+        opcache \
+        intl
+
+# Habilitar mod_rewrite
+RUN sed -i 's/#LoadModule rewrite_module/LoadModule rewrite_module/' /usr/local/apache2/conf/httpd.conf
+
+# Configurar PHP
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY docker/php.ini $PHP_INI_DIR/conf.d/custom.ini
+
+# Configurar Apache
+COPY docker/apache.conf /usr/local/apache2/conf/extra/000-default.conf
+RUN echo "Include conf/extra/000-default.conf" >> /usr/local/apache2/conf/httpd.conf
+
+# Diretório de trabalho
+WORKDIR /var/www/html
+
+# Copiar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copiar arquivos de dependências primeiro
+COPY composer.json composer.lock ./
+
+# Instalar dependências
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Copiar código da aplicação
+COPY . .
+
+# Executar scripts pós-instalação
+RUN composer run-script --no-dev post-install-cmd || true
+
+# Configurar permissões
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 777 /var/www/html/logs \
+    && chmod -R 777 /var/www/html/assets/upload
+
+EXPOSE 80
+CMD ["httpd-foreground"]
