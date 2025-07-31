@@ -3,26 +3,26 @@ FROM php:8.2-apache-alpine
 
 # Instalar dependências Alpine (muito mais rápido)
 RUN apk add --no-cache \
-    freetype-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    libzip-dev \
-    icu-dev \
-    oniguruma-dev \
-    git \
-    unzip \
-    curl
+  freetype-dev \
+  libjpeg-turbo-dev \
+  libpng-dev \
+  libzip-dev \
+  icu-dev \
+  oniguruma-dev \
+  git \
+  unzip \
+  curl
 
 # Configurar e instalar extensões PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-        gd \
-        pdo \
-        pdo_mysql \
-        mysqli \
-        zip \
-        opcache \
-        intl
+  && docker-php-ext-install -j$(nproc) \
+  gd \
+  pdo \
+  pdo_mysql \
+  mysqli \
+  zip \
+  opcache \
+  intl
 
 # Habilitar mod_rewrite
 RUN sed -i 's/#LoadModule rewrite_module/LoadModule rewrite_module/' /usr/local/apache2/conf/httpd.conf
@@ -55,9 +55,9 @@ RUN composer run-script --no-dev post-install-cmd || true
 
 # Configurar permissões
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 777 /var/www/html/logs \
-    && chmod -R 777 /var/www/html/assets/upload
+  && chmod -R 755 /var/www/html \
+  && chmod -R 777 /var/www/html/logs \
+  && chmod -R 777 /var/www/html/assets/upload
 
 EXPOSE 80
 CMD ["httpd-foreground"]

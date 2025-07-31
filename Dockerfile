@@ -7,47 +7,47 @@ ENV MAKEFLAGS="-j$(nproc)"
 
 # Usar mirror brasileiro para downloads mais rápidos
 RUN echo "deb http://mirror.ufscar.br/debian bullseye main" > /etc/apt/sources.list \
-    && echo "deb http://mirror.ufscar.br/debian bullseye-updates main" >> /etc/apt/sources.list \
-    && echo "deb http://security.debian.org/debian-security bullseye-security main" >> /etc/apt/sources.list
+  && echo "deb http://mirror.ufscar.br/debian bullseye-updates main" >> /etc/apt/sources.list \
+  && echo "deb http://security.debian.org/debian-security bullseye-security main" >> /etc/apt/sources.list
 
 # Instalar dependências essenciais primeiro
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    curl \
-    unzip \
-    git \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  ca-certificates \
+  curl \
+  unzip \
+  git \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Instalar dependências para extensões PHP em etapas separadas
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  libpng-dev \
+  libjpeg62-turbo-dev \
+  libfreetype6-dev \
+  libzip-dev \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Instalar ICU usando package binário (mais rápido que compilar)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libicu67 \
-    libicu-dev \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  libicu67 \
+  libicu-dev \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Instalar extensões PHP críticas primeiro (sem intl)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-        gd \
-        pdo \
-        pdo_mysql \
-        mysqli \
-        zip \
-        opcache
+  && docker-php-ext-install -j$(nproc) \
+  gd \
+  pdo \
+  pdo_mysql \
+  mysqli \
+  zip \
+  opcache
 
 # Instalar intl separadamente com timeout maior
 RUN timeout 1800 docker-php-ext-install intl || \
-    (echo "Intl installation failed, trying alternative method..." && \
-     apt-get update && \
-     apt-get install -y php8.2-intl && \
-     rm -rf /var/lib/apt/lists/*)
+  (echo "Intl installation failed, trying alternative method..." && \
+  apt-get update && \
+  apt-get install -y php8.2-intl && \
+  rm -rf /var/lib/apt/lists/*)
 
 # Habilitar mod_rewrite do Apache
 RUN a2enmod rewrite headers ssl

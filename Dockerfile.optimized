@@ -3,10 +3,10 @@ FROM serversideup/php:8.2-fpm-apache
 
 # Instalar apenas dependências necessárias
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    unzip \
-    git \
-    curl \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  unzip \
+  git \
+  curl \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Habilitar mod_rewrite do Apache
 RUN a2enmod rewrite headers ssl
@@ -37,9 +37,9 @@ RUN composer run-script --no-dev post-install-cmd || true
 
 # Configurar permissões
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 777 /var/www/html/logs \
-    && chmod -R 777 /var/www/html/assets/upload
+  && chmod -R 755 /var/www/html \
+  && chmod -R 777 /var/www/html/logs \
+  && chmod -R 777 /var/www/html/assets/upload
 
 # Expor porta
 EXPOSE 80
