@@ -64,7 +64,7 @@ COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
 # Definir diretório de trabalho
 WORKDIR /var/www/html
 
-# Copiar composer
+# Copiar  composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copiar arquivos do projeto
