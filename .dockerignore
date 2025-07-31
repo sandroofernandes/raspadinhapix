@@ -1,40 +1,118 @@
-# Ignorar arquivos desnecessários para reduzir tempo de build
-.git
+# ==================================================
+# .dockerignore otimizado para Coolify
+# ==================================================
+
+# === Git e Controle de Versão ===
+.git/
 .gitignore
+.gitattributes
+.github/
+
+# === Documentação ===
 README.md
+CHANGELOG.md
+LICENSE
+*.md
+
+# === Arquivos de Configuração de Desenvolvimento ===
 .env.example
+.env.local
+.env.development
+.env.test
+docker-compose.yml
+docker-compose.override.yml
+
+# === Dockerfiles Alternativos ===
 Dockerfile.alpine
 Dockerfile.optimized
+Dockerfile.dev
 optimize-docker.sh
+build-scripts/
 
-# Arquivos de desenvolvimento
+# === IDEs e Editores ===
 .vscode/
 .idea/
-*.log
+.vs/
+*.sublime-*
+.atom/
 
-# Arquivos temporários
-.DS_Store
-Thumbs.db
+# === Logs e Arquivos Temporários ===
+*.log
+logs/*.log
 *.tmp
 *.swp
 *.swo
+.DS_Store
+Thumbs.db
+*.pid
+*.seed
+*.pid.lock
 
-# Cache e builds
+# === Node.js (se houver) ===
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.npm/
+.yarn/
 
-# Arquivos de upload grandes (apenas para build)
+# === PHP Específico ===
+vendor/*/tests/
+vendor/*/test/
+vendor/*/docs/
+vendor/*/documentation/
+.phpunit.result.cache
+phpunit.xml
+.php_cs.cache
+
+# === Uploads e Assets Grandes ===
+# Manter estrutura de pastas mas ignorar conteúdo grande
 assets/upload/*.jpg
-assets/upload/*.png
 assets/upload/*.jpeg
+assets/upload/*.png
 assets/upload/*.gif
-logs/*.log
+assets/upload/*.pdf
+assets/upload/*.zip
+assets/upload/*.rar
+assets/banners/*.jpg
+assets/banners/*.png
 
-# Certificados locais
+# === Certificados e Chaves (CRÍTICO para segurança) ===
 __certificate/
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.jks
 
-# Backup files
+# === Cache e Build ===
+.cache/
+dist/
+build/
+coverage/
+.nyc_output/
+
+# === Backups e Arquivos Temporários ===
 *.bak
 *.backup
+*.old
+*.orig
+*~
+.#*
+
+# === Arquivos de Sistema ===
+.env
+*.env
+!.env.example
+.htpasswd
+
+# === Coolify Específico ===
+# Arquivos que o Coolify não precisa
+coolify/
+.coolify/
+deployment-scripts/
+
+# === Arquivos de Análise ===
+.scannerwork/
+sonar-project.properties
