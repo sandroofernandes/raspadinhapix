@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=raspadinhapix
+      - DB_USERNAME=root
+      - DB_PASSWORD=senha123
+      - SITE_NAME=RaspaPix
+      - SITE_URL=https://raspadinhapix.online
+    volumes:
+      - ./logs:/var/www/html/logs
+      - ./assets/upload:/var/www/html/assets/upload
+    depends_on:
+      - db
+    networks:
+      - raspadinhapix_network
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: senha123
+      MYSQL_DATABASE: raspadinhapix
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - raspadinhapix_network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: senha123
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - raspadinhapix_network
+
+volumes:
+  db_data:
+
+networks:
+  raspadinhapix_network:
+    driver: bridge
