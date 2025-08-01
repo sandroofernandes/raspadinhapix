@@ -11,7 +11,7 @@ RewriteEngine On
 # Fix para "No input file specified"
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /index.php [L] [QSA,NC]
+RewriteRule ^(.*)$ /index.php [QSA,NC]
 
 # Security headers
 Header always set X-Content-Type-Options nosniff
