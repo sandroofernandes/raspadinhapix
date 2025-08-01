@@ -1,0 +1,20 @@
+# Dockerfile mínimo para teste
+FROM php:8.2-apache-bullseye
+
+# Habilitar mod_rewrite
+RUN a2enmod rewrite headers
+
+# Copiar apenas arquivos essenciais
+WORKDIR /var/www/html
+COPY teste.php .
+COPY health.php .
+COPY index.php .
+
+# Permissões básicas
+RUN chown -R www-data:www-data /var/www/html
+
+# Expor porta
+EXPOSE 80
+
+# Iniciar Apache
+CMD ["apache2-foreground"]

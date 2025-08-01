@@ -6,12 +6,12 @@ RewriteEngine On
 # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # PHP Configuration
-DirectoryIndex index.php index.html
+# DirectoryIndex index.php index.html
 
 # Fix para "No input file specified"
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /index.php [L]
+RewriteRule ^(.*)$ /index.php [L] [QSA,NC]
 
 # Security headers
 Header always set X-Content-Type-Options nosniff
